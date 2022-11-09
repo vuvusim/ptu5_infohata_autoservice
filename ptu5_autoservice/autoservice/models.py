@@ -60,7 +60,7 @@ class Order(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        return f"{self.date}: {self.total}"
+        return f"{self.id}/{self.date}: {self.total}"
 
 
 class OrderLine(models.Model):
