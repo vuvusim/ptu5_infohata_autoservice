@@ -1,13 +1,14 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from datetime import date
 
 
 class CarModel(models.Model):
-    METAI_CHOICES = ((metai, str(metai)) for metai in reversed(range(1899, 2023)))
+    YEARS_CHOICES = ((year, str(year)) for year in reversed(range(1899, date.today().year+1)))
 
     make = models.CharField(_("make"), max_length=50)
     model = models.CharField(_("model"), max_length=50)
-    year = models.IntegerField(_("year"), choices=METAI_CHOICES)
+    year = models.IntegerField(_("year"), choices=YEARS_CHOICES)
     engine = models.CharField(_("engine"), max_length=50)
 
     def __str__(self) -> str:
@@ -54,7 +55,8 @@ class Order(models.Model):
         return total
 
     def save(self, *args, **kwargs):
-        self.total = self.get_total()
+        if not self._state.adding:
+            self.total = self.get_total()
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
